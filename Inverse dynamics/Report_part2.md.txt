@@ -1,0 +1,53 @@
+# Report: Part 3 - Dynamics
+
+## Overview
+This section implements the inverse dynamics model for a 7-DOF Sawyer Robot using the Newton-Euler formulation. The goal is to compute joint torques based on joint angles, velocities, and accelerations, with an enhanced motion profile for visualization.
+
+## Inverse Dynamics
+### Objective
+Calculate the joint torques (`tau`) required for a specified motion defined by joint angles (`q`), velocities (`qd`), and accelerations (`qdd`).
+
+### Methodology
+- **Newton-Euler Formulation**: 
+  - **Outward Iterations**: Compute velocities, accelerations, and forces from base to end-effector.
+  - **Inward Iterations**: Propagate forces and torques back to compute joint torques.
+- **Inputs**: 
+  - State vector `[q; qd; qdd]` (21x1).
+  - Geometric and inertia data from Part 1.
+- **Outputs**: Joint torques (`tau`, 7x1 vector in Nm).
+
+### Implementation
+- **File**: `Inverse_dyn.m`
+- **Key Steps**:
+  1. Compute transformation matrices using DH parameters.
+  2. Outward iterations: Calculate `w`, `wd`, `vd`, `F`, and `N`.
+  3. Inward iterations: Compute `tau` by propagating forces and moments.
+
+## Motion Specification
+- **File**: `fcn.m`
+- **Description**: Defines a sinusoidal motion profile:
+  - `q(i) = A(i) * sin(omega(i) * t + phi(i))`
+  - `qd(i) = A(i) * omega(i) * cos(omega(i) * t + phi(i))`
+  - `qdd(i) = -A(i) * omega(i)^2 * sin(omega(i) * t + phi(i))`
+  - **Parameters**:
+    - `A`: Amplitudes (default: [1, 0.5, 0.3, 0.2, 0.1, 0.05, 0] rad).
+    - `phi`: Phase shifts (default: zeros).
+    - `omega`: Frequencies ([1, 1.5, 2, 2.5, 3, 3.5, 4] rad/s).
+- **Purpose**: Creates a dynamic, multi-joint motion for interesting torque plots.
+
+## Visualization
+- **File**: `test_dynamics.m`
+- **Description**: Simulates 5 seconds of motion and plots torques for all 7 joints.
+- **Example Output**: With custom `A = [1, 0.8, 0.6, 0.4, 0.2, 0.1, 0]` and `phi = [0, π/4, π/2, 3π/4, π, 5π/4, 0]`, the plot shows varied torque profiles due to differing amplitudes, frequencies, and phases.
+
+## Results
+- The updated `fcn.m` produces a complex motion where joints oscillate at different rates, leading to torques that reflect inertial, Coriolis, and gravitational effects.
+- The plot from `test_dynamics.m` highlights the dynamic interplay between joints, making it visually engaging.
+
+## Future Work
+- **Part 4**: Design control strategies to track this sinusoidal motion.
+- Enhance `fcn.m` with user-defined frequencies or external inputs.
+
+## Notes
+- Requires MATLAB for execution.
+- Run `test_dynamics.m` to visualize results.
