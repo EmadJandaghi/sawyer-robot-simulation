@@ -37,10 +37,7 @@ The Sawyer robot is a 7-DOF robotic manipulator developed by Rethink Robotics. T
 4. **Part 4: Control**
    - **Objective**: Design a controller to stabilize the Sawyer robot at a desired joint configuration.
    - **Implementation**:
-     - Used a **Computed Torque Control** law with PD feedback:
-       \[
-       \tau = M(q) (\ddot{q}_r + K_p (q_r - q) + K_d (0 - \dot{q})) + N(q, \dot{q})
-       \]
+     - Used a **Computed Torque Control** law with PD feedback.
      - Desired joint angles: `q_r(1) = pi/2`, `q_r(2) = -pi/2`, `q_r(3:7) = pi/4`, with zero velocity and acceleration.
      - Implemented in `Controller.m` with gains `Kp = 100 * eye(7)`, `Kd = 100 * eye(7)`.
      - Simulated in Simulink (`Control.slx`), incorporating the dynamics model and forward kinematics.
